@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:bmi_calculator/components/icon_content.dart';
 import 'package:bmi_calculator/components/reusable_card.dart.dart';
+import 'package:bmi_calculator/calculator_brain.dart';
+import 'package:bmi_calculator/screens/results_page.dart';
 
 // CONSTANTS for Colors
 const kActiveCardColor = Color(0xFF1D1E33);
@@ -114,6 +116,41 @@ class _InputPageState extends State<InputPage> {
                 Expanded(child: Container()),
                 Expanded(child: Container()),
               ],
+            ),
+          ),
+
+          // CALCULATE BUTTON
+          GestureDetector(
+            onTap: () {
+              // 1. Initialize logic
+              CalculatorBrain calc = CalculatorBrain(
+                height: height,
+                weight: 60,
+              ); // Hardcoded weight for demo
+
+              // 2. Navigate
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ResultsPage(
+                    bmiResult: calc.calculateBMI(),
+                    resultText: calc.getResult(),
+                    interpretation: calc.getInterpretation(),
+                  ),
+                ),
+              );
+            },
+            child: Container(
+              color: const Color(0xFFEB1555),
+              margin: const EdgeInsets.only(top: 10.0),
+              width: double.infinity,
+              height: 80.0,
+              child: const Center(
+                child: Text(
+                  'CALCULATE',
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                ),
+              ),
             ),
           ),
         ],
