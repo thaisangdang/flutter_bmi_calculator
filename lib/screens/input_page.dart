@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:bmi_calculator/calculator_brain.dart';
 import 'package:bmi_calculator/components/icon_content.dart';
 import 'package:bmi_calculator/components/reusable_card.dart.dart';
-import 'package:bmi_calculator/calculator_brain.dart';
+import 'package:bmi_calculator/components/round_icon_button.dart';
 import 'package:bmi_calculator/screens/results_page.dart';
 
-// CONSTANTS for Colors
 const kActiveCardColor = Color(0xFF1D1E33);
 const kInactiveCardColor = Color(0xFF111328);
 
@@ -17,8 +18,10 @@ class InputPage extends StatefulWidget {
 
 class _InputPageState extends State<InputPage> {
   // STATE VARIABLES
-  bool isMale = true; // Tracks selected gender
+  bool isMale = true;
   int height = 180;
+  int weight = 60; // Default weight
+  int age = 20; // Default age
 
   @override
   Widget build(BuildContext context) {
@@ -27,36 +30,35 @@ class _InputPageState extends State<InputPage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // --- ROW 1: GENDER SELECTION ---
+          // --- ROW 1: GENDER ---
           Expanded(
             child: Row(
               children: [
                 Expanded(
                   child: ReusableCard(
-                    // TERNARY OPERATOR: If male is selected, use active color
+                    onPress: () => setState(() => isMale = true),
                     color: isMale ? kActiveCardColor : kInactiveCardColor,
                     cardChild: const IconContent(
-                      icon: Icons.male,
+                      icon: FontAwesomeIcons.mars,
                       label: 'MALE',
                     ),
-                    onPress: () => setState(() => isMale = true),
                   ),
                 ),
                 Expanded(
                   child: ReusableCard(
+                    onPress: () => setState(() => isMale = false),
                     color: !isMale ? kActiveCardColor : kInactiveCardColor,
                     cardChild: const IconContent(
-                      icon: Icons.female,
+                      icon: FontAwesomeIcons.venus,
                       label: 'FEMALE',
                     ),
-                    onPress: () => setState(() => isMale = false),
                   ),
                 ),
               ],
             ),
           ),
 
-          // --- ROW 2: HEIGHT SLIDER ---
+          // --- ROW 2: HEIGHT (Slider) ---
           Expanded(
             child: ReusableCard(
               color: kActiveCardColor,
@@ -82,13 +84,10 @@ class _InputPageState extends State<InputPage> {
                       const Text('cm'),
                     ],
                   ),
-                  // SLIDER WIDGET
                   SliderTheme(
                     data: SliderTheme.of(context).copyWith(
-                      thumbColor: const Color(0xFFEB1555), // Pink thumb
-                      overlayColor: const Color(
-                        0x29EB1555,
-                      ), // Translucent pink overlay
+                      thumbColor: const Color(0xFFEB1555),
+                      overlayColor: const Color(0x29EB1555),
                       thumbShape: const RoundSliderThumbShape(
                         enabledThumbRadius: 15.0,
                       ),
@@ -109,26 +108,118 @@ class _InputPageState extends State<InputPage> {
             ),
           ),
 
-          // --- ROW 3: WEIGHT & AGE (Simplified for brevity) ---
+          // --- ROW 3: WEIGHT & AGE ---
           Expanded(
             child: Row(
               children: [
-                Expanded(child: Container()),
-                Expanded(child: Container()),
+                // WEIGHT CARD
+                Expanded(
+                  child: ReusableCard(
+                    color: kActiveCardColor,
+                    cardChild: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'WEIGHT',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Color(0xFF8D8E98),
+                          ),
+                        ),
+                        Text(
+                          weight.toString(),
+                          style: const TextStyle(
+                            fontSize: 50,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            RoundIconButton(
+                              icon: FontAwesomeIcons.minus,
+                              onPressed: () {
+                                setState(() {
+                                  weight--;
+                                });
+                              },
+                            ),
+                            const SizedBox(width: 10.0),
+                            RoundIconButton(
+                              icon: FontAwesomeIcons.plus,
+                              onPressed: () {
+                                setState(() {
+                                  weight++;
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // AGE CARD
+                Expanded(
+                  child: ReusableCard(
+                    color: kActiveCardColor,
+                    cardChild: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'AGE',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Color(0xFF8D8E98),
+                          ),
+                        ),
+                        Text(
+                          age.toString(),
+                          style: const TextStyle(
+                            fontSize: 50,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            RoundIconButton(
+                              icon: FontAwesomeIcons.minus,
+                              onPressed: () {
+                                setState(() {
+                                  age--;
+                                });
+                              },
+                            ),
+                            const SizedBox(width: 10.0),
+                            RoundIconButton(
+                              icon: FontAwesomeIcons.plus,
+                              onPressed: () {
+                                setState(() {
+                                  age++;
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
 
-          // CALCULATE BUTTON
+          // --- CALCULATE BUTTON ---
           GestureDetector(
             onTap: () {
-              // 1. Initialize logic
+              // UPDATED LOGIC: Pass actual height and weight
               CalculatorBrain calc = CalculatorBrain(
                 height: height,
-                weight: 60,
-              ); // Hardcoded weight for demo
+                weight: weight,
+              );
 
-              // 2. Navigate
               Navigator.push(
                 context,
                 MaterialPageRoute(
