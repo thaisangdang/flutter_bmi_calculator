@@ -24,7 +24,7 @@ By building this project, you will learn:
 
 1. **Ensure you are in the project directory:**
     
-    `cd bmi_calculator`
+    `cd flutter_bmi_calculator`
     
 2. **Install Dependencies:**
     
